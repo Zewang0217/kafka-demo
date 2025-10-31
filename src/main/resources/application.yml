@@ -22,8 +22,7 @@ spring:
     bootstrap-servers: localhost:9092,localhost:9094,localhost:9096
     consumer:
       # 消费者组ID，用于跟踪消费进度
-#      group-id: web-log-consumer-group
-      # 键和值都使用 String 反序列化器，因为 web-logs topic 预期是字符串日志
+      group-id: test-message-group     # 键和值都使用 String 反序列化器，因为 web-logs topic 预期是字符串日志
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       # 第一次启动时，从最早的可用偏移量开始消费
@@ -32,3 +31,6 @@ spring:
       ack-mode: manual_immediate # 设置为手动立即提交
       # 开启自动提交
 #      enable-auto-commit: true
+    listener:
+      ack-mode: manual_immediate # 监听器自动提交模式
+

@@ -20,12 +20,16 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class TestProducer {
 
-    @Qualifier("kafkaTemplateAcks1") // 指定自动装配类型
+//    @Qualifier("kafkaTemplateAcks1") // 指定自动装配类型
     private final KafkaTemplate<String, String> kafkaTemplate;
     private static final String TOPIC = "test-topic";
+
+    public TestProducer(@Qualifier("kafkaTemplateAcks1") KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
 
     // 定时发送测试消息
     @Scheduled(fixedDelay = 5000, initialDelay = 10000) // 每5秒发送一次，初始延迟10秒

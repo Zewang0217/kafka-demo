@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zewang.kafkademo.dto.rest.CreateTopicRequest;
 import org.zewang.kafkademo.dto.rest.KafkaMessageRequest;
 import org.zewang.kafkademo.service.KafkaMessageService;
+import org.zewang.kafkademo.service.RedisDedupService;
 import org.zewang.kafkademo.service.admin.TopicManagementService;
 
 /**
@@ -32,6 +33,8 @@ public class RESTController {
     private KafkaMessageService kafkaMessageService;
     @Autowired
     private TopicManagementService topicManagementService;
+    @Autowired
+    private RedisDedupService redisDedupService;
 
     // 发送消息并指定acks级别
     @PostMapping("/send")
@@ -122,5 +125,11 @@ public class RESTController {
         }
 
         return true;
+    }
+
+    @PostMapping("/redis/clean")
+    public String cleanRedis(@RequestParam String redisKey) {
+        redisDedupService.clearAll();
+        return "Redis 数据清理完成";
     }
 }

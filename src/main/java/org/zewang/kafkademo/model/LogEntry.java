@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,10 @@ import lombok.NoArgsConstructor;
  */
 
 @Entity
-@Table(name = "web_log_entries")
+@Table(name = "web_log_entries",
+uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"idAddress", "timestamp", "method", "path"})
+})
 @Data
 @NoArgsConstructor // 自动生成无参构造函数
 @AllArgsConstructor // 自动生成全参构造函数
