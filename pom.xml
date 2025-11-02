@@ -30,6 +30,23 @@
   <properties>
     <java.version>21</java.version>
   </properties>
+
+  <!-- 仓库 -->
+  <repositories>
+    <!-- Maven 中央仓库作为备选 -->
+    <repository>
+      <id>central</id>
+      <name>Maven Central</name>
+      <url>https://repo1.maven.org/maven2/</url>
+    </repository>
+
+    <!-- Confluent 仓库 -->
+    <repository>
+      <id>confluent</id>
+      <url>https://packages.confluent.io/maven/</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
     <!-- Spring Boot Web Starter (基础) -->
@@ -63,6 +80,20 @@
       <optional>true</optional>
     </dependency>
 
+<!--    jackson JSR310-->
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+    </dependency>
+
+
+<!--    Schema Registry    -->
+<!--    <dependency>-->
+<!--      <groupId>io.confluent</groupId>-->
+<!--      <artifactId>kafka-avro-serializer</artifactId>-->
+<!--      <version>7.5.0</version>-->
+<!--    </dependency>-->
+
 <!--    Redis  -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -95,6 +126,7 @@
           <parameters>true</parameters>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 

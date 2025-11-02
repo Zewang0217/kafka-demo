@@ -19,7 +19,7 @@ import org.zewang.kafkademo.service.RedisDedupService;
  */
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class ManualOffsetConsumer {
 

@@ -25,6 +25,9 @@ import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
+import org.zewang.kafkademo.config.serialize.CustomJsonDeserializer;
+import org.zewang.kafkademo.config.serialize.CustomJsonSerializer;
+import org.zewang.kafkademo.model.TestMessage;
 
 /**
  * @author "Zewang"
@@ -77,6 +80,23 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
+    // 配置消费者工厂 - 自定义反序列化
+    @Bean
+    public ConsumerFactory<String, TestMessage> customConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "custom-serializer-group");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, CustomJsonDeserializer.class);
+        props.put("serializedClass", TestMessage.class.getName());
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
+
+
+    // 创建 KafkaListenerContainerFactory
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
@@ -84,6 +104,34 @@ public class KafkaConfig {
         factory.setConsumerFactory(consumerFactory());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
         return factory;
+    }
+
+    // 创建 KafkaListenerContainerFactory - 自定义反序列化
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, TestMessage> customKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, TestMessage> factory =
+            new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(customConsumerFactory());
+        factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        return factory;
+    }
+
+    // 配置使用自定义序列化器的生产者工厂
+    @Bean
+    public ProducerFactory<String, TestMessage> customProducerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomJsonSerializer.class);
+        props.put("serializedClass", "org.zewang.kafkademo.model.TestMessage");
+        props.put(ProducerConfig.ACKS_CONFIG, "1");
+
+        return new DefaultKafkaProducerFactory<>(props);
+    }
+
+    @Bean
+    public KafkaTemplate<String, TestMessage> customKafkaTemplate() {
+        return new KafkaTemplate<>(customProducerFactory());
     }
 
     // 配置acks=0的KafkaTemplate

@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2025/11/1 10:20
  */
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class TestMessageConsumer {
 

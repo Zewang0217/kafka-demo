@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @date 2025/11/1 10:10
  */
 @Slf4j
-@Component
+//@Component
 public class TestMessageProducer {
 
 //    @Qualifier("kafkaTemplateAcks1") // 指定自动装配类型

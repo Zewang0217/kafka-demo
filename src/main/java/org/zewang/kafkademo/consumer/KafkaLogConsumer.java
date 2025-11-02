@@ -25,7 +25,7 @@ import org.zewang.kafkademo.repository.LogEntryRepository;
  * @date 2025/10/30 18:36
  */
 
-@Component
+//@Component
 @Slf4j
 @RequiredArgsConstructor
 public class KafkaLogConsumer {
