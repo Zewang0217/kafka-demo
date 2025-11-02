@@ -11,10 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zewang.kafkademo.model.LogEntry;
+import org.zewang.kafkademo.entity.LogEntry;
 import org.zewang.kafkademo.repository.LogEntryRepository;
 
 /**

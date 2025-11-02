@@ -1,5 +1,5 @@
 // TestMessage.java
-package org.zewang.kafkademo.model;
+package org.zewang.kafkademo.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

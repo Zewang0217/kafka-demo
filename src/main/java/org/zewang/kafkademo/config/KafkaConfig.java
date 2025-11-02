@@ -4,7 +4,6 @@ package org.zewang.kafkademo.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -12,7 +11,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.web.ServerProperties.Netty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
@@ -27,7 +25,7 @@ import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
 import org.zewang.kafkademo.config.serialize.CustomJsonDeserializer;
 import org.zewang.kafkademo.config.serialize.CustomJsonSerializer;
-import org.zewang.kafkademo.model.TestMessage;
+import org.zewang.kafkademo.entity.TestMessage;
 
 /**
  * @author "Zewang"
@@ -123,7 +121,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, CustomJsonSerializer.class);
-        props.put("serializedClass", "org.zewang.kafkademo.model.TestMessage");
+        props.put("serializedClass", "org.zewang.kafkademo.entity.TestMessage");
         props.put(ProducerConfig.ACKS_CONFIG, "1");
 
         return new DefaultKafkaProducerFactory<>(props);

@@ -4,7 +4,7 @@ package org.zewang.kafkademo.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.zewang.kafkademo.model.TestMessage;
+import org.zewang.kafkademo.entity.TestMessage;
 import org.zewang.kafkademo.service.TestMessageService;
 import java.util.List;
 

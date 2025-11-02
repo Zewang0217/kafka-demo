@@ -3,7 +3,7 @@ package org.zewang.kafkademo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.zewang.kafkademo.model.TestMessage;
+import org.zewang.kafkademo.entity.TestMessage;
 import java.util.Optional;
 
 /**

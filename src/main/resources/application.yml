@@ -34,3 +34,8 @@ spring:
     listener:
       ack-mode: manual_immediate # 监听器自动提交模式
 
+kafka:
+  connect:
+    url: http://localhost:8083
+
+

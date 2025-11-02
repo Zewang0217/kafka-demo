@@ -3,7 +3,7 @@ package org.zewang.kafkademo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import org.zewang.kafkademo.model.LogEntry;
+import org.zewang.kafkademo.entity.LogEntry;
 
 
 /**

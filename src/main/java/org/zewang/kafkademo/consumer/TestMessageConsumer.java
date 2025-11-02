@@ -4,14 +4,12 @@ package org.zewang.kafkademo.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
-import org.springframework.stereotype.Component;
-import org.zewang.kafkademo.model.TestMessage;
+import org.zewang.kafkademo.entity.TestMessage;
 import org.zewang.kafkademo.service.RedisDedupService;
 import org.zewang.kafkademo.service.TestMessageService;
 import java.time.LocalDateTime;
@@ -44,7 +42,7 @@ public class TestMessageConsumer {
      * @param record Kafka消息记录
      * @param acknowledgment 手动确认对象
      */
-    @KafkaListener(topics = "test-messages", groupId = "test-message-group")
+//    @KafkaListener(topics = "test-messages", groupId = "test-message-group")
     public void listen(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
         String key = record.key();
         String value = record.value();
