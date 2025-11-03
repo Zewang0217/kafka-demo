@@ -30,7 +30,7 @@ import org.zewang.kafkademo.entity.TestMessage;
 /**
  * @author "Zewang"
  * @version 1.0
- * @description: TODO (这里用一句话描述这个类的作用)
+ * @description: Kafka 配置类
  * @email "Zewang0217@outlook.com"
  * @date 2025/10/31 19:30
  */
@@ -93,6 +93,23 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
+    // 优化的消费者工厂
+    @Bean
+    public ConsumerFactory<String, String> optimizedConsumerFactory() {
+        Map<String, Object> props = new HashMap<>();
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "optimized-consumer-group");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+
+        // Consumer Batching 优化
+        props.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, 1024); // 最小拉取 1KB
+        props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, 500); // 最大等待 500ms
+        props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, 500); // 每次 poll 最多 500 条记录
+
+        return new DefaultKafkaConsumerFactory<>(props);
+    }
 
     // 创建 KafkaListenerContainerFactory
     @Bean
@@ -168,6 +185,25 @@ public class KafkaConfig {
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configs.put(ProducerConfig.ACKS_CONFIG, "all"); // 等待所有副本确认
         configs.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true); // 启用幂等性
+
+        ProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(configs);
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    // 优化 Producer 配置的template
+    @Bean("optimizedKafkaTemplate")
+    public KafkaTemplate<String, String> optimizedKafkaTemplate() {
+        Map<String, Object> configs = new HashMap<>();
+        configs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configs.put(ProducerConfig.ACKS_CONFIG, "1");
+
+        // Batching 优化配置
+        configs.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384); // 16KB 批处理大小
+        configs.put(ProducerConfig.LINGER_MS_CONFIG, 5); // 5ms 延迟以增加批处理机会
+        configs.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy"); // 使用 Snappy 压缩
+        configs.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432); // 32MB 缓冲区
 
         ProducerFactory<String, String> producerFactory = new DefaultKafkaProducerFactory<>(configs);
         return new KafkaTemplate<>(producerFactory);

@@ -1,8 +1,11 @@
 package org.zewang.kafkademo.controller;
 
 
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +38,22 @@ public class RESTController {
     private TopicManagementService topicManagementService;
     @Autowired
     private RedisDedupService redisDedupService;
+
+    @Autowired
+    @Qualifier("optimizedKafkaTemplate")
+    private KafkaTemplate<String, String> optimizedKafkaTemplate;
+
+    @Autowired
+    @Qualifier("kafkaTemplateAcks0")
+    private KafkaTemplate<String, String> kafkaTemplateAcks0;
+
+    @Autowired
+    @Qualifier("kafkaTemplateAcks1")
+    private KafkaTemplate<String, String> kafkaTemplateAcks1;
+
+    @Autowired
+    @Qualifier("kafkaTemplateAcksAll")
+    private KafkaTemplate<String, String> kafkaTemplateAcksAll;
 
     // 发送消息并指定acks级别
     @PostMapping("/send")
@@ -131,5 +150,45 @@ public class RESTController {
     public String cleanRedis(@RequestParam String redisKey) {
         redisDedupService.clearAll();
         return "Redis 数据清理完成";
+    }
+
+    // 性能测试
+    @PostMapping("/performance-test")
+    public String perfomanceTest(@RequestParam(defaultValue = "1000") int messageCount,
+        @RequestParam(defaultValue = "optimized") String templateType) {
+        long startTime = System.currentTimeMillis();
+
+        KafkaTemplate<String, String> template;
+        switch (templateType) {
+            case "acks0":
+                template = kafkaTemplateAcks0;
+                break;
+            case "acks1":
+                template = kafkaTemplateAcks1;
+                break;
+            case "acksAll":
+                template = kafkaTemplateAcksAll;
+                break;
+            case "optimized":
+            default:
+                template = optimizedKafkaTemplate; // 使用上面定义的优化模板
+                break;
+        }
+
+        String topic = "performance-test-topic";
+        topicManagementService.createTopic(topic, 3, (short) 1);
+
+        // 发送批量消息
+        for (int i = 0; i < messageCount; i++) {
+            String key = "key-" + i;
+            String message = "Performance test message #" + i + " with content: " + UUID.randomUUID().toString();
+            template.send(topic, key, message);
+        }
+
+        long endTime = System.currentTimeMillis();
+        long duration = endTime - startTime;
+
+        return String.format("发送 %d 条消息耗时 %d ms，平均 %.2f ms/条",
+            messageCount, duration, (double)duration/messageCount);
     }
 }
