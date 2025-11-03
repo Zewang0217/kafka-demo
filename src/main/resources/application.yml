@@ -34,8 +34,20 @@ spring:
     listener:
       ack-mode: manual_immediate # 监听器自动提交模式
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health,info,metrics
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
 kafka:
   connect:
     url: http://localhost:8083
+
+
 
 

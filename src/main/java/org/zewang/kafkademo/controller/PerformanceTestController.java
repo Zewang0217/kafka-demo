@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.zewang.kafkademo.service.KafkaMetricsService;
 import org.zewang.kafkademo.service.PerformanceTestService;
 import org.zewang.kafkademo.service.admin.TopicManagementService;
 
@@ -23,6 +24,7 @@ import org.zewang.kafkademo.service.admin.TopicManagementService;
 @Slf4j
 public class PerformanceTestController {
 
+    private final KafkaMetricsService kafkaMetricsService;
     private final PerformanceTestService performanceTestService;
     private final TopicManagementService topicManagementService;
 
@@ -61,7 +63,10 @@ public class PerformanceTestController {
         for (int i = 0; i < messageCount; i++) {
             String key = "key-" + i;
             String message = generateMessage(i);
+            long sendStartTime = System.currentTimeMillis();
             template.send(topic, key, message);
+            // 记录每条消息的发送时间
+            kafkaMetricsService.recordSendTime(System.currentTimeMillis() - sendStartTime);
         }
 
         long endTime = System.currentTimeMillis();
