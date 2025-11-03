@@ -91,6 +91,16 @@
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
 
+<!--    Kafka Streams-->
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-streams</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.kafka</groupId>
+      <artifactId>kafka-clients</artifactId>
+    </dependency>
 
 <!--    Schema Registry    -->
 <!--    <dependency>-->
